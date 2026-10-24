@@ -134,7 +134,6 @@ public class Eye {
     public boolean inEye(int x, int y){
         double dx = (x - eyeCenterX) / (eyeWidth / 2.0);
         double dy = (y - eyeCenterY) / (eyeHeight / 2.0);
-
         return square(dx) + square(dy) <= 1;
     }
 
