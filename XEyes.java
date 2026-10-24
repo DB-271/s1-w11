@@ -2,6 +2,7 @@ import java.awt.*;
 import java.io.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 /*
  * XEyes: 
@@ -20,6 +21,7 @@ public class XEyes extends JPanel implements MouseListener, MouseMotionListener{
     // Each eye gets an instance variable.
     private Eye eye_1;
     private Eye eye_2;
+    private ArrayList<Eye> eyes = new ArrayList<Eye>();
     
 
     // Constructor: this loads the image "einstein.jpg" in the "images" directory 
@@ -34,6 +36,8 @@ public class XEyes extends JPanel implements MouseListener, MouseMotionListener{
         // these eyes fit right on Einstein's head.  
         eye_1 = new Eye(269, 290, 49, 37);
         eye_2 = new Eye(372, 290, 49, 37);
+        eyes.add(eye_1);
+        eyes.add(eye_2);
         addMouseListener(this);
         addMouseMotionListener(this);
         myFrame.setVisible(true);
@@ -53,18 +57,20 @@ public class XEyes extends JPanel implements MouseListener, MouseMotionListener{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(myPic.getImage(), 0, 0, this);
-        eye_1.draw(g);
-        eye_2.draw(g);
+        for (Eye eye : eyes){
+            eye.draw(g);
+        }
     }
+
     private void updateEyes(MouseEvent event){
-        eye_1.movePupil(event.getX(), event.getY());
-        eye_2.movePupil(event.getX(), event.getY());
+        for (Eye eye : eyes){
+            eye.movePupil(event.getX(), event.getY());
+        }
         repaint();
     }
     
     // move the pupil when the mouse is clicked
     public void mouseClicked (MouseEvent event) {
-        updateEyes(event);
     }
 
     public void mouseMoved (MouseEvent event){
@@ -72,6 +78,7 @@ public class XEyes extends JPanel implements MouseListener, MouseMotionListener{
     }
 
     public void mouseDragged (MouseEvent event){
+        eyes.add(new Eye(event.getX(), event.getY(), 20, 15));
         updateEyes(event);
     }
   
@@ -79,6 +86,10 @@ public class XEyes extends JPanel implements MouseListener, MouseMotionListener{
     }
     
     public void mousePressed (MouseEvent event) {
+        for (Eye eye : eyes){
+            eye.setLaser(event.getX(), event.getY());
+        }
+        updateEyes(event);
     }
     
     public void mouseEntered (MouseEvent event) {

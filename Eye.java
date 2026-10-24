@@ -8,6 +8,8 @@ public class Eye {
     private int eyeballBorder = 3;
     private int pupilRadius = 10;
     private double horDist, vertDist;
+    private int clickX, clickY;
+    private boolean laserOn = false;
 
 
     public Eye(int x, int y, int width, int height) {
@@ -38,6 +40,12 @@ public class Eye {
      
     }
 
+    public void setLaser(int x, int y){
+        clickX = x;
+        clickY = y;
+        laserOn = true;
+    }
+
     
     public void draw (Graphics g) {
         
@@ -50,6 +58,10 @@ public class Eye {
                     
         g.setColor(Color.black);
         g.fillOval(pupilX - pupilRadius, pupilY - pupilRadius, 2 * pupilRadius, 2 * pupilRadius);
+        if(laserOn){
+            g.setColor(Color.red);
+            g.drawLine(pupilX, pupilY, clickX, clickY);
+        }
     }
 
 
@@ -62,9 +74,17 @@ public class Eye {
     // This sets pupilX and pupilY to the new pupil position, using actual mathematics
     //  learned in high school...
     public void movePupil(int clickX, int clickY) {
+        
+        if(inEye(clickX, clickY)){
+            pupilX = eyeCenterX;
+            pupilY = eyeCenterY;
+            return;
+        }
+        
         // distance from click to eye center
         int deltaX = clickX - eyeCenterX;
         int deltaY = clickY - eyeCenterY;
+
 
         if (deltaX == 0) {
             //first check if the click was exactly aligned vertically with eye center
@@ -111,9 +131,16 @@ public class Eye {
         return ( (slope * (pupX - eyeCenterX)) + eyeCenterY );
     }
     
-    
-    
+    public boolean inEye(int x, int y){
+        double dx = (x - eyeCenterX) / (eyeWidth / 2.0);
+        double dy = (y - eyeCenterY) / (eyeHeight / 2.0);
 
+        return square(dx) + square(dy) <= 1;
+    }
+
+    private double square(double number){
+        return number * number;
+    }
 
 
 
